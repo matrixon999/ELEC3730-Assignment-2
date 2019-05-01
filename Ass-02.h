@@ -9,6 +9,10 @@
 #ifndef ASS_02_H_
 #define ASS_02_H_
 
+
+
+typedef struct symbols {int Area[42][5]; char ***items;} symbol;
+symbol grid;
 // Standard includes
 #ifdef STM32F407xx
 #include "stm32f4xx_hal.h"
@@ -24,6 +28,10 @@
 #include <string.h>
 #include <math.h>
 
+#include "util.h"
+#include "tokeniser.h"
+#include "parser.h"
+
 // Assignment and version strings
 #define ASS_STRING "ELEC3730-2019t1 Assignment 2"
 #define VER_STRING "Ver: 01 $Rev: 1592 $"
@@ -37,6 +45,7 @@ Ass_02_Main (void);
 //
 
 extern int string_parser(char *inp, char **array_of_words_p[]);
+extern double EquationParserSTM(char *equation);
 
 // Question 1
 extern void

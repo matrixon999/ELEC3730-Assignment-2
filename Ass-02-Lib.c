@@ -10,45 +10,6 @@
 // PLACE YOUR COMMON CODE HERE 
 //
 
-/*int string_parser(char *inp, char **array_of_words_p[]) {
-  // copy string to a local variable for manipulation
-    char* str = malloc(sizeof(inp));
-    strcpy(str, inp);
-
-    // start off with just a pointer
-    char** array_of_words = malloc(0);
-
-    // delimiter is just a single space
-    char* delim = " ";
-
-    // first call to strtok
-    char* tok = strtok(str, delim);
-
-    int string_count = 0;
-
-    // if tok isn't NULL, we have a string
-    while(tok != 0)
-    {
-      string_count++;
-      // reallocate memory to allow for another char* to be added.
-      array_of_words = realloc(array_of_words, sizeof(char*) * string_count);
-
-      // allocate tok in new_string on the heap
-      char* new_string = malloc(sizeof(strlen(tok)));
-      // copy the string to the new allocating
-      strcpy(new_string, tok);
-      // add new_string to the array of words
-      array_of_words[string_count-1] = new_string;
-
-      tok = strtok(NULL, delim);
-    }
-
-    // assign input pointer
-    *array_of_words_p = array_of_words;
-
-    return string_count;
-}*/
-
 int string_parser(char *inp, char **array_of_words_p[])
 {
 
