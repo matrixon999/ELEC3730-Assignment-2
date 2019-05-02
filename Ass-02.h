@@ -36,6 +36,15 @@ symbol grid;
 #define ASS_STRING "ELEC3730-2019t1 Assignment 2"
 #define VER_STRING "Ver: 01 $Rev: 1592 $"
 
+// These are defines for changing the colours of the output text
+#define CONSOLE_RED(str)     "\x1b[31m" str "\x1b[0m"
+#define CONSOLE_GREEN(str)   "\x1b[32m" str "\x1b[0m"
+#define CONSOLE_YELLOW(str)  "\x1b[33m" str "\x1b[0m"
+#define CONSOLE_BLUE(str)    "\x1b[34m" str "\x1b[0m"
+#define CONSOLE_MAGENTA(str) "\x1b[35m" str "\x1b[0m"
+#define CONSOLE_CYAN(str)    "\x1b[36m" str "\x1b[0m"
+#define CONSOLE_RESET   "\x1b[0m"
+
 // Assignment main
 extern void
 Ass_02_Main (void);
@@ -46,6 +55,8 @@ Ass_02_Main (void);
 
 extern int string_parser(char *inp, char **array_of_words_p[]);
 extern double EquationParserSTM(char *equation);
+#define SCREEN_WIDTH 100
+extern int* CalculateGraph(char *equation);
 
 // Question 1
 extern void

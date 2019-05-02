@@ -13,15 +13,6 @@
 // REPLACE THE EXAMPLE CODE WITH YOUR CODE
 //
 
-// These are defines for changing the colours of the output text
-#define CONSOLE_RED(str)     "\x1b[31m" str "\x1b[0m"
-#define CONSOLE_GREEN(str)   "\x1b[32m" str "\x1b[0m"
-#define CONSOLE_YELLOW(str)  "\x1b[33m" str "\x1b[0m"
-#define CONSOLE_BLUE(str)    "\x1b[34m" str "\x1b[0m"
-#define CONSOLE_MAGENTA(str) "\x1b[35m" str "\x1b[0m"
-#define CONSOLE_CYAN(str)    "\x1b[36m" str "\x1b[0m"
-#define CONSOLE_RESET   "\x1b[0m"
-
 // static variable to keep track of debug status even outside of looping
 static int debug_enabled = 0;
 static int equation_mode = 0;
@@ -453,29 +444,69 @@ void RegularParser(char *str)
 	}
 }
 
+int* CalculateGraph(char *equation)
+{
+	int yPoints[SCREEN_WIDTH];
+	TokenArray *token_array = tokenise_expression(equation);
+
+	for(int x = 0; x < SCREEN_WIDTH; x++)
+	{
+		TokenArray *copy = copy_token_array(token_array);
+		replace_x_identifiers(copy, x);
+		double y = parse_expression1(copy);
+		yPoints[x] = (int)y;
+		printf("x: %d, y: %d\n", (int)x, (int)y);
+	}
+
+	return yPoints;
+}
+
 double EquationParserSTM(char *equation)
 {
 	TokenArray *token_array = tokenise_expression(equation);
+
+	if(has_x_identifiers(token_array))
+	{
+		int screen_width = 100;
+		for(int x = 0; x < screen_width; x++)
+		{
+			TokenArray *copy = copy_token_array(token_array);
+			replace_x_identifiers(copy, x);
+			double y = parse_expression1(copy);
+			printf("x: %lf, y: %lf\n", (float)x, y);
+		}
+	}
+
 	double result = parse_expression1(token_array);
 	return result;
 }
 
 void EquationModeParser(char *equation)
 {
-	if(strcmp(equation, "equation off") == 0)
+	if(strstr(equation, "debug") != NULL)
 	{
-		printf("equation mode off\n");
-		equation_mode = 0;
+		RegularParser(equation);
 		return;
 	}
-	if(strcmp(equation, "equation on") == 0)
+	if(strstr(equation, "equation") != NULL)
 	{
-		printf("Equation mode already enabled\n");
+		RegularParser(equation);
+		return;
+	}
+	else if(strcmp(equation, "exit") == 0)
+	{
+		RegularParser(equation);
+		return;
+	}
+	else if(strcmp(equation, "help") == 0)
+	{
+		printf("You're in equation mode. Just type an expression as you would in a calculator, including functions like sin and cos.\n");
+		printf("To exit, just type exit.\n");
 		return;
 	}
 
 	TokenArray *token_array = tokenise_expression(equation);
-	print_token_array(token_array);
+	if(debug_enabled) print_token_array(token_array);
 
 	if(has_x_identifiers(token_array))
 	{
@@ -491,13 +522,13 @@ void EquationModeParser(char *equation)
 	else
 	{
 		double result = parse_expression1(token_array);
-		printf("%lf\n\n", truncate_double(result));
+		printf("%s\n\n", truncate_double(result));
 	}
 
 	// this might delete data in the structs
-	free(equation);
+	//free(equation);
 
-	reset(token_array);
+	//reset(token_array);
 }
 
 static char *in_string;

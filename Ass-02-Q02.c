@@ -173,16 +173,34 @@ void HandlePress(int x, int y)
 				BSP_LCD_DisplayStringAt(20, 20, "                            ", LEFT_MODE);
 				init = 0;
 
-				double result = EquationParserSTM(tempString);
-				char res[20];
-				snprintf(res, 20,  "%lf", result);
-				BSP_LCD_DisplayStringAt(20, 20, res, LEFT_MODE);
+				// tokenise here to check if has an x terms
+				TokenArray *token_array = tokenise_expression(tempString);
+				// if there are x's. Don't calculate, and let the user know to press the graph button
+				if(has_x_identifiers(token_array))
+				{
+					printf(CONSOLE_RED("This equation has x terms. To create a graph, press the graph button!\n"));
+				}
+				else
+				{
+					double result = EquationParserSTM(tempString);
+					char res[20];
+					snprintf(res, 20,  "%lf", result);
+					BSP_LCD_DisplayStringAt(20, 20, res, LEFT_MODE);
+				}
 
+				// if crashing at this point. remove this line. should be fine though.
+				free(token_array);
 			}
 			else if(strcmp(itemg[i], "AC")==0){
 				should_print = 0;
 				BSP_LCD_DisplayStringAt(20, 20, "                            ", LEFT_MODE);
 				init = 0;
+			}
+			else if(strcmp(itemg[i], "graph") == 0) {
+				int y_Points[SCREEN_WIDTH] = CalculateGraph(tempString);
+
+				// These are the y points for the x's 0 to SCREEN_WIDTH.
+				// SCREEN_WIDTH is a define just above the CalculateGraph function in Ass-02.h
 			}
 
 			if(should_print) {
@@ -193,7 +211,7 @@ void HandlePress(int x, int y)
 				temp = itemg[i];
 				tempString = realloc(tempString, strlen(temp) + strlen(tempString) + 1);
 				strcat(tempString, temp);
-				BSP_LCD_DisplayStringAt(20, 20, truncate_double(tempString), LEFT_MODE);
+				BSP_LCD_DisplayStringAt(20, 20, tempString, LEFT_MODE);
 				return;
 			}
 		}

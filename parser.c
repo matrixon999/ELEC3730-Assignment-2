@@ -9,6 +9,7 @@ double parse_expression1(TokenArray *ta)
 		if(t->type == Sub)
 		{
 			Token *next = grab_next(ta);
+			if(next == NULL) return 0.0;
 
 			if(next->type == Number)
 			{
@@ -64,9 +65,7 @@ double parse_expression2(TokenArray *ta)
 
 			if(depth != 0)
 			{
-				printf("No closing parentheses found!\n");
-				//print_token_array(ta);
-				//exit(0);
+				printf(CONSOLE_RED("No closing parentheses found!\n"));
 				return 0.0;
 			}
 
@@ -109,15 +108,24 @@ double parse_expression3(TokenArray *ta)
 	{
 		if(t->type == Identifier)
 		{
-			printf("Checking identifier\n");
 			if(strcmp(t->data, "x") == 0)
 			{
 				printf("Found an x, this is probably for graphing mode\n");
-				printf("Still need to implement that\n");
 				return 0.0;
 			}
 
+			// literals
+			if(strcmp(t->data, "Pi") == 0)
+			{
+				t->type = Number;
+				t->num_value = 3.1415926;
+				continue;
+			}
+
 			Token *right = grab_next(ta);
+			if(right == NULL) return 0.0;
+
+			// functions
 
 			if(right != NULL && right->type == Number)
 			{
@@ -177,11 +185,11 @@ double parse_expression3(TokenArray *ta)
 					remove_token(ta, right);
 					ta->pos -= 1;
 				}
-				else
-				{
-					printf("Unknown Identifier\n");
-					return 0.0;
-				}
+			}
+			else
+			{
+				printf(CONSOLE_RED("Unknown Identifier: %s\n"), t->data);
+				return 0.0;
 			}
 		}
 	}
@@ -199,7 +207,9 @@ double parse_expression4(TokenArray *ta)
 		if(t->type == Mult)
 		{
 			Token* left = grab_prev(ta);
+			if(left == NULL) return 0.0;
 			Token* right = grab_next(ta);
+			if(right == NULL) return 0.0;
 
 			if(left->type == Number && right->type == Number)
 			{
@@ -214,7 +224,9 @@ double parse_expression4(TokenArray *ta)
 		else if(t->type == Div)
 		{
 			Token* left = grab_prev(ta);
+			if(left == NULL) return 0.0;
 			Token* right = grab_next(ta);
+			if(right == NULL) return 0.0;
 
 			if(left->type == Number && right->type == Number)
 			{
@@ -241,7 +253,9 @@ double parse_expression5(TokenArray *ta)
 		if(t->type == Add)
 		{
 			Token* left = grab_prev(ta);
+			if(left == NULL) return 0.0;
 			Token* right = grab_next(ta);
+			if(right == NULL) return 0.0;
 
 			if(left->type == Number && right->type == Number)
 			{
@@ -256,7 +270,9 @@ double parse_expression5(TokenArray *ta)
 		else if(t->type == Sub)
 		{
 			Token* left = grab_prev(ta);
+			if(left == NULL) return 0.0;
 			Token* right = grab_next(ta);
+			if(right == NULL) return 0.0;
 
 			if(left->type == Number && right->type == Number)
 			{
@@ -275,14 +291,14 @@ double parse_expression5(TokenArray *ta)
 	{
 		printf("Error occurred\n");
 		printf("We should only have 1 token by this point.\n");
-		print_token_array(ta);
+		//print_token_array(ta);
 		return 0.0;
 	}
 	if(ta->array[0]->type != Number)
 	{
 		printf("Error occurred\n");
 		printf("We have 1 token, but it's not a number.\n");
-		print_token_array(ta);
+		//print_token_array(ta);
 		return 0.0;
 	}
 

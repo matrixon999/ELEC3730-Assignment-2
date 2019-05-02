@@ -9,12 +9,16 @@ Token* next(TokenArray* ta)
 
 Token* grab_next(TokenArray* ta)
 {
-	return ta->array[ta->pos];
+	int pos = ta->pos;
+	if(pos > ta->num_elements) return NULL;
+	return ta->array[pos];
 }
 
 Token* grab_prev(TokenArray* ta)
 {
-	return ta->array[ta->pos - 2];
+	int pos = ta->pos - 2;
+	if(pos < 0) return NULL;
+	return ta->array[pos];
 }
 
 void reset(TokenArray* ta)
@@ -182,11 +186,11 @@ void print_token(Token* t)
 {
 	if(t->type == Number)
 	{
-		printf("Token: %p - %s : %lf\n", t, ttype_to_str(t->type), t->num_value);
+		printf(CONSOLE_BLUE("Token: %p - %s : %lf\n"), t, ttype_to_str(t->type), t->num_value);
 	}
 	else
 	{
-		printf("Token: %p - %s : %s\n", t, ttype_to_str(t->type), t->data);
+		printf(CONSOLE_BLUE("Token: %p - %s : %s\n"), t, ttype_to_str(t->type), t->data);
 	}
 }
 
@@ -195,7 +199,7 @@ void print_token_array(TokenArray *ta)
 	printf("--\n");
 	for(int i = 0; i < ta->num_elements; i++)
 	{
-		if(ta->pos-1 == i) printf("-> ");
+		if(ta->pos-1 == i) printf(CONSOLE_GREEN("-> "));
 		print_token(ta->array[i]);
 	}
 	printf("--\n\n");
@@ -204,8 +208,6 @@ void print_token_array(TokenArray *ta)
 TokenArray *tokenise_expression(char* expression)
 {
 	TokenArray *token_array = create_new_token_array();
-
-	//printf("Size of expression: %d\n", strlen(expression));
 
 	for(int i = 0; i < strlen(expression); i++)
 	{
